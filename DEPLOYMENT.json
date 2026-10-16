@@ -1,0 +1,13 @@
+{
+  "provider": "Cloudflare Pages",
+  "project": "qr-studio-mr-christophe",
+  "url": "https://qr-studio-mr-christophe.pages.dev/",
+  "source_repository": "https://github.com/EthanPwn86/qr-studio-mr-christophe",
+  "deployment_method": "dashboard_direct_upload",
+  "published_on": "2026-10-16",
+  "verified_public_tests": 8,
+  "public_test_failures": 0,
+  "service_worker_build": "b65f4026a386a478",
+  "server_functions": false,
+  "tracking": false
+}

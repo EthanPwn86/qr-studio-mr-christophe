@@ -1,0 +1,32 @@
+{
+  "name": "qr-studio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build && node scripts/build-pwa.mjs",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "playwright test",
+    "deploy": "wrangler pages deploy dist --project-name qr-studio-mr-christophe"
+  },
+  "dependencies": {
+    "@zxing/library": "^0.23.0",
+    "jsqr": "^1.4.0",
+    "lucide-react": "^0.468.0",
+    "qr-code-styling": "^1.9.2",
+    "qrcode-generator": "^2.0.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "sharp": "^0.35.5",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.0",
+    "wrangler": "^4.0.0"
+  }
+}
