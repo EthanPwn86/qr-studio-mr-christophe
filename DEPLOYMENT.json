@@ -1,7 +1,10 @@
 {
   "provider": "Cloudflare Pages",
-  "project": "qr-studio-mr-christophe",
-  "url": "https://qr-studio-mr-christophe.pages.dev/",
+  "project": "qrtof",
+  "url": "https://qrtof.pages.dev/",
+  "previous_project": "qr-studio-mr-christophe",
+  "previous_url": "https://qr-studio-mr-christophe.pages.dev/",
+  "previous_deployment_preserved": true,
   "source_repository": "https://github.com/EthanPwn86/qr-studio-mr-christophe",
   "deployment_method": "dashboard_direct_upload",
   "published_on": "2026-10-16",

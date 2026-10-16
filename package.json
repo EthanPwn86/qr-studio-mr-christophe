@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build && node scripts/build-pwa.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "test": "playwright test",
-    "deploy": "wrangler pages deploy dist --project-name qr-studio-mr-christophe"
+    "deploy": "wrangler pages deploy dist --project-name qrtof"
   },
   "dependencies": {
     "@zxing/library": "^0.23.0",

@@ -4,9 +4,9 @@ Version 1.0.0 — 16 octobre 2026.
 
 ## Tests automatisés réellement exécutés
 
-Compilation de production TypeScript + Vite réussie. Suite Playwright exécutée dans Microsoft Edge installé, sans interface : **8 scénarios réussis, 0 échec en local (39,0 s)**, puis **8 scénarios réussis, 0 échec sur l'adresse publique HTTPS (39,7 s)** après correction des problèmes constatés.
+Compilation de production TypeScript + Vite réussie. Suite Playwright exécutée dans Microsoft Edge installé, sans interface : **8 scénarios réussis, 0 échec en local (39,0 s)**, puis **8 scénarios réussis, 0 échec sur l'adresse publique initiale HTTPS (39,7 s)** après correction des problèmes constatés. Après publication à la nouvelle adresse **https://qrtof.pages.dev/**, les huit scénarios ont été exécutés de nouveau : **8 réussis, 0 échec (45,1 s)**.
 
-Application vérifiée : **https://qr-studio-mr-christophe.pages.dev/**. Le document HTTPS répond HTTP 200 et fournit la politique CSP attendue. Les tests locaux appliquent aussi cette politique à la première page afin de reproduire les restrictions de l'hébergement.
+Application vérifiée à la nouvelle adresse : **https://qrtof.pages.dev/**. Le document HTTPS répond HTTP 200 et fournit la politique CSP attendue. Les tests locaux appliquent aussi cette politique à la première page afin de reproduire les restrictions de l'hébergement.
 
 | Scénario | Vérification |
 | --- | --- |
@@ -37,6 +37,10 @@ La vérification de lecture est logicielle (jsQR et ZXing). **Aucun smartphone p
 L'installabilité est vérifiée par le manifest, les icônes et le service worker ; **aucune installation réelle sur un iPhone ou Android n'a été effectuée**. Les instructions d'installation sont dans l'application et le README.
 
 ## Publication
+
+La nouvelle adresse **https://qrtof.pages.dev/** a été réservée et publiée sur le projet Cloudflare Pages distinct `qrtof`, le 16 octobre 2026. La même archive de production de 14 fichiers a été utilisée, sans changement du design ni des fonctionnalités. Le document HTML, le manifest PWA, le service worker et le logo officiel ont été comparés par SHA-256 : ils sont identiques à ceux de la version initiale. Tous les scénarios du tableau ci-dessus ont réussi sur cette nouvelle adresse, y compris la génération et les exports hors connexion.
+
+L'adresse initiale **https://qr-studio-mr-christophe.pages.dev/** répond toujours HTTP 200, sans redirection. Son projet et son déploiement n'ont pas été modifiés. L'historique et l'installation PWA étant propres à chaque origine, l'ancien historique reste sur l'adresse initiale ; la PWA de la nouvelle adresse s'installe depuis `qrtof.pages.dev`.
 
 Publication réalisée sur Cloudflare Pages, projet distinct `qr-studio-mr-christophe`, le 16 octobre 2026. Les 14 fichiers statiques de production ont été téléversés par chargement direct. Cloudflare a confirmé le déploiement ; l'adresse publique a ensuite passé les huit scénarios ci-dessus, y compris le mode hors connexion.
 

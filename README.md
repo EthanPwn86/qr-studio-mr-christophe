@@ -2,11 +2,13 @@
 
 Application statique de génération de QR codes, gratuite, sans compte, sans publicité ni suivi. React, TypeScript et Vite. Toutes les créations et tous les logos sont traités dans le navigateur, sans API QR ni redirection intermédiaire.
 
-**Application publique : https://qr-studio-mr-christophe.pages.dev/**
+**Application publique : https://qrtof.pages.dev/**
 
 **Dépôt du code : https://github.com/EthanPwn86/qr-studio-mr-christophe**
 
-Publié le 16 octobre 2026 sur le projet Cloudflare Pages distinct `qr-studio-mr-christophe`, par chargement direct. HTTPS et sous-domaine fournis gratuitement. Aucun abonnement ni achat n'a été souscrit pour ce projet.
+Publié le 16 octobre 2026 sur Cloudflare Pages, par chargement direct. L'adresse principale utilise le projet distinct `qrtof`. HTTPS et sous-domaine fournis gratuitement. Aucun abonnement ni achat n'a été souscrit pour ce projet.
+
+L'adresse initiale https://qr-studio-mr-christophe.pages.dev/ reste disponible et son déploiement est conservé. Le design, les fonctionnalités, le logo officiel et la signature sont identiques sur les deux adresses. Les données locales et l'installation PWA appartiennent à chaque origine : l'historique existant reste accessible sur l'adresse initiale ; pour utiliser la nouvelle adresse en PWA, l'installer depuis https://qrtof.pages.dev/.
 
 ## Utilisation
 
@@ -48,13 +50,12 @@ Les tests utilisent Microsoft Edge installé (`channel: msedge`). Pour une autre
 
 Le projet utilise exclusivement des fichiers statiques : aucun Worker, aucune base serveur, aucune fonction facturable, aucun domaine payant requis.
 
-Après `npm run build` : dans le tableau de bord Cloudflare → Workers et Pages → Créer une application → Pages → chargement direct. Créer un projet distinct `qr-studio-mr-christophe`, puis charger **le contenu de `dist`** ou une archive ZIP contenant directement `index.html`. L'adresse gratuite `*.pages.dev` fournit HTTPS.
+Après `npm run build` : dans le tableau de bord Cloudflare → Workers et Pages → ouvrir le projet `qrtof` → Créer un déploiement → Production, puis charger **le contenu de `dist`** ou une archive ZIP contenant directement `index.html`. L'adresse gratuite `*.pages.dev` fournit HTTPS.
 
 Autre possibilité, avec Wrangler connecté au compte :
 
 ```sh
 npx wrangler login
-npx wrangler pages project create qr-studio-mr-christophe --production-branch main
 npm run deploy
 ```
 
