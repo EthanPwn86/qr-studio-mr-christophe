@@ -6,11 +6,18 @@
   "previous_url": "https://qr-studio-mr-christophe.pages.dev/",
   "previous_deployment_preserved": true,
   "source_repository": "https://github.com/EthanPwn86/qr-studio-mr-christophe",
-  "deployment_method": "dashboard_direct_upload",
+  "deployment_method": "wrangler_pages_advanced_worker",
+  "deployment_url": "https://529a7cb5.qrtof.pages.dev/",
   "published_on": "2026-10-16",
-  "verified_public_tests": 8,
+  "verified_public_tests": 10,
+  "verified_collector_tests": 8,
   "public_test_failures": 0,
-  "service_worker_build": "b65f4026a386a478",
-  "server_functions": false,
-  "tracking": false
+  "service_worker_build": "b77efd80ffce1e19",
+  "server_functions": true,
+  "personal_tracking": false,
+  "aggregate_usage_metrics": true,
+  "qr_contents_collected": false,
+  "cloudflare_plan": "Workers Free",
+  "usage_database": "qrtof-usage",
+  "statistics_guide": "STATISTIQUES.md"
 }

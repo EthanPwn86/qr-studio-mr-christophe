@@ -1,0 +1,12 @@
+{
+  "name": "qrtof",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-10-16",
+  "d1_databases": [
+    {
+      "binding": "USAGE_DB",
+      "database_name": "qrtof-usage",
+      "database_id": "f99cfb23-7cda-4a6e-b927-e39767ecf84b"
+    }
+  ]
+}

@@ -40,6 +40,10 @@ test.beforeAll(async () => {
   await writeFile('artifacts/test-logo.png', logo)
 })
 test.beforeEach(async ({ page }) => {
+  // Test actions must never inflate the owner's real audience/usage counters.
+  await page.route('**/api/usage', route => route.fulfill({ status: 204 }))
+  await page.route('https://static.cloudflareinsights.com/**', route => route.fulfill({ status: 200, contentType: 'application/javascript', body: '' }))
+  await page.route('**/cdn-cgi/rum*', route => route.fulfill({ status: 204 }))
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   page.on('console', message => { if (message.type() === 'error') errors.push(message.text()) })
@@ -136,7 +140,7 @@ test('import logo PNG/JPEG/WebP, couleurs et logo intégrés aux deux exports, r
   await expect(page.getByText('Lecture automatique vérifiée')).toBeVisible()
   expect((await exported(page, 'SVG', 'without-logo')).toString()).not.toContain('<image')
   await page.getByRole('button', { name: 'Restaurer les paramètres par défaut', exact: true }).click()
-  await expect(page.getByRole('textbox', { name: 'Couleur du QR hexadécimale', exact: true })).toHaveValue('#164C3B')
+  await expect(page.getByRole('textbox', { name: 'Couleur du QR hexadécimale', exact: true })).toHaveValue('#0B3550')
   await expect(page.getByRole('textbox', { name: 'Couleur du fond hexadécimale', exact: true })).toHaveValue('#FFFFFF')
 })
 
@@ -197,6 +201,7 @@ test('responsive 390 px et 320 px, contrôles tactiles et dialogues accessibles'
     await page.setViewportSize({ width, height: 844 })
     await ready(page)
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy()
+    await expect(page.getByRole('button', { name: 'Installer l’application', exact: true }).getByText('Installer', { exact: true })).toBeVisible()
     await page.screenshot({ path: `artifacts/mobile-${width}.png`, fullPage: true })
   }
   await page.getByRole('button', { name: 'Installer l’application', exact: true }).click()
@@ -208,6 +213,38 @@ test('responsive 390 px et 320 px, contrôles tactiles et dialogues accessibles'
   await expect(page.getByRole('dialog')).toBeVisible()
   await page.getByRole('button', { name: 'C’est compris', exact: true }).click()
   await expect(page.getByRole('dialog')).not.toBeVisible()
+})
+
+test('compteurs agrégés sans URL ni logo et sans doublon au changement de style', async ({ page }) => {
+  const events: unknown[] = []
+  await page.route('**/api/usage', async route => {
+    events.push(route.request().postDataJSON())
+    expect(route.request().headers().referer).toBeUndefined()
+    expect(route.request().headers().cookie).toBeUndefined()
+    await route.fulfill({ status: 204 })
+  })
+  await ready(page, 'https://example.com/prive?secret=ne-pas-transmettre')
+  await expect.poll(() => events.length).toBe(1)
+  await page.getByRole('button', { name: 'Couleur #194faa', exact: true }).click()
+  await expect(page.getByText('Lecture automatique vérifiée')).toBeVisible()
+  await page.getByTestId('logo-input').setInputFiles({ name: 'confidentiel.png', mimeType: 'image/png', buffer: logo })
+  await expect(page.getByText('Lecture automatique vérifiée')).toBeVisible()
+  await exported(page, 'PNG', 'usage-png')
+  await exported(page, 'SVG', 'usage-svg')
+  // Let the existing history debounce finish after changing the design.
+  await page.waitForTimeout(1400)
+  expect(events).toEqual([{ event: 'qr_generated' }, { event: 'download_png' }, { event: 'download_svg' }])
+})
+
+test('les compteurs respectent le signal Ne pas me suivre', async ({ page }) => {
+  const events: string[] = []
+  await page.addInitScript(() => Object.defineProperty(Navigator.prototype, 'doNotTrack', { configurable: true, get: () => '1' }))
+  await page.reload()
+  await page.route('**/api/usage', async route => { events.push(route.request().postData() || ''); await route.fulfill({ status: 204 }) })
+  await ready(page)
+  await exported(page, 'PNG', 'usage-opt-out')
+  await page.waitForTimeout(1400)
+  expect(events).toEqual([])
 })
 
 test('PWA installable, ressources locales, vrai rechargement et exports hors connexion', async ({ page, context }) => {

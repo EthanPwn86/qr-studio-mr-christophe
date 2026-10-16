@@ -11,7 +11,7 @@ export type Design = {
 }
 export type Entry = { id: string; url: string; design: Design; created: number; thumbnail: string }
 export const defaults: Design = {
-  foreground: '#164c3b', background: '#ffffff', dots: 'square', corners: 'extra-rounded',
+  foreground: '#0b3550', background: '#ffffff', dots: 'square', corners: 'extra-rounded',
   logo: '', logoName: '', logoSize: 0.2,
 }
 

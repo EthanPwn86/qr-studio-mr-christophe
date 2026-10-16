@@ -28,7 +28,7 @@ Les captures et fichiers exportés sont dans `artifacts/`. Les résultats struct
 - `npm audit` après installation : zéro vulnérabilité connue signalée ; contrôle des dépendances de production également sans alerte.
 - Licences de production inspectées et textes conservés dans `public/THIRD-PARTY-NOTICES.txt`.
 - Logo officiel comparé à l'original par SHA-256 : copie identique (`F7F728538C7926138C6FC7BFA58DD732E97A5C291FD02218E98F8086D5A4131A`). Le logo n'est pas appliqué automatiquement aux QR.
-- Le build ne contient ni appel à une API QR, ni police distante, ni script de suivi. La politique CSP limite les ressources à l'origine du site et aux images locales/data/blob.
+- La version initiale ne contenait ni appel à une API QR, ni police distante, ni script de suivi. La mesure agrégée ajoutée ensuite est décrite ci-dessous ; les données des QR restent locales.
 
 ## Limites honnêtes
 
@@ -47,3 +47,20 @@ Publication réalisée sur Cloudflare Pages, projet distinct `qr-studio-mr-chris
 La vérification sur l'hébergement réel a permis de corriger deux problèmes spécifiques : une conversion inutile des logos par XHR bloquée par la CSP, et la réponse de secours hors connexion qui devait utiliser l'URL canonique `/` plutôt que `/index.html` redirigée par Pages.
 
 Le dépôt GitHub distinct a été créé après rétablissement de la connexion : https://github.com/EthanPwn86/qr-studio-mr-christophe. Le code complet, les dépendances verrouillées, la documentation et les tests sont également livrés localement et dans une archive source.
+
+## Ajout des statistiques — 16 octobre 2026
+
+- Offre **Workers Free à 0 $** vérifiée dans le tableau de bord. Base D1 `qrtof-usage` créée en région WEUR, avec uniquement une table de totaux par jour et au total.
+- **8 tests du collecteur réussis** : agrégats, absence de lecture publique, origines, DNT/GPC, rejet des contenus de QR/propriétés supplémentaires, limite de taille, panne de base et délégation des ressources statiques.
+- **10 tests navigateur réussis localement (49,3 s), puis sur https://qrtof.pages.dev/ (53,2 s)**. Deux nouveaux scénarios contrôlent les seuls événements transmis (sans lien, logo, cookie ni référent), l'absence de doublons lors des changements de style et le respect de DNT. Les tests interceptent les compteurs réels pour ne pas gonfler les totaux.
+- Manifest, service worker, rechargement, import du logo et exports PNG/SVG **hors connexion** vérifiés sur le site public. La copie HTML réservée au cache hors connexion retire le beacon externe injecté par Cloudflare ; aucune ressource externe n'est demandée lors de cette vérification.
+- Vérification distincte réellement connectée au collecteur : création d'un QR vers l'adresse publique et exports PNG/SVG. Les trois événements ont répondu **HTTP 204** ; seuls leurs noms ont été envoyés. Le script Cloudflare a répondu **200** et le beacon de fréquentation **204**. Ce test initial ajoute 1 QR, 1 PNG et 1 SVG aux totaux.
+- Déploiement confirmé : https://cd26b885.qrtof.pages.dev/ (production https://qrtof.pages.dev/). La confidentialité a été mise à jour. Le CSS, le design, les icônes et le logo officiel n'ont pas été changés. L'ancienne adresse conserve son déploiement.
+
+## Identité bleue approuvée ensuite
+
+Après accord explicite de publication, l'interface adopte le bleu marine et le bleu azur, sur fond bleu très clair. Le bouton d'installation utilise une flèche et le libellé « Installer », également visible à 320 px. Le manifest et les icônes PWA reprennent la palette ; le PNG officiel Mr Christophe reste intact.
+
+Les **10 scénarios navigateur passent sur la compilation finale locale (49,9 s)**, dont le libellé Installer visible sur mobile, les exports scannables, l'historique, les compteurs et la PWA hors connexion. La couleur QR par défaut devient le bleu marine ; les anciennes créations gardent leurs couleurs enregistrées.
+
+La version finale publique **https://529a7cb5.qrtof.pages.dev/**, disponible à **https://qrtof.pages.dev/**, passe également les **10 scénarios (51,2 s)**. Le cache PWA est `b77efd80ffce1e19`. Le logo officiel garde le SHA-256 `F7F728538C7926138C6FC7BFA58DD732E97A5C291FD02218E98F8086D5A4131A`. Le tableau de compteurs propose aussi une vue privée en lecture seule, `tableau_de_bord`, avec des colonnes courtes QR/PNG/SVG/Exports.

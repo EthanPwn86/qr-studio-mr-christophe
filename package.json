@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build && node scripts/build-pwa.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "test": "playwright test",
+    "test:usage": "node --test analytics/usage-worker.test.mjs",
     "deploy": "wrangler pages deploy dist --project-name qrtof"
   },
   "dependencies": {

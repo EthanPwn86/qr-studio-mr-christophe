@@ -1,6 +1,6 @@
 # QR Studio — by Mr Christophe
 
-Application statique de génération de QR codes, gratuite, sans compte, sans publicité ni suivi. React, TypeScript et Vite. Toutes les créations et tous les logos sont traités dans le navigateur, sans API QR ni redirection intermédiaire.
+Application de génération de QR codes, gratuite, sans compte ni publicité. React, TypeScript et Vite. Toutes les créations et tous les logos sont traités dans le navigateur, sans API QR ni redirection intermédiaire. La fréquentation et les actions sont mesurées par des statistiques agrégées ; aucun contenu de QR n'est transmis aux compteurs.
 
 **Application publique : https://qrtof.pages.dev/**
 
@@ -48,9 +48,9 @@ Les tests utilisent Microsoft Edge installé (`channel: msedge`). Pour une autre
 
 ## Publication gratuite sur Cloudflare Pages
 
-Le projet utilise exclusivement des fichiers statiques : aucun Worker, aucune base serveur, aucune fonction facturable, aucun domaine payant requis.
+La génération et l'export utilisent des fichiers statiques. Un endpoint Pages Function et une base D1 de l'offre **Workers Free à 0 $** conservent uniquement les compteurs d'usage. Aucun abonnement ni domaine payant requis. Ne pas passer à Workers Paid : à l'épuisement des quotas gratuits, les statistiques deviennent incomplètes mais la création et l'export restent disponibles sans limite de nombre.
 
-Après `npm run build` : dans le tableau de bord Cloudflare → Workers et Pages → ouvrir le projet `qrtof` → Créer un déploiement → Production, puis charger **le contenu de `dist`** ou une archive ZIP contenant directement `index.html`. L'adresse gratuite `*.pages.dev` fournit HTTPS.
+Après `npm run build`, déployer avec Wrangler et le fichier `wrangler.jsonc`, qui conserve la liaison D1. Le téléversement manuel dans le tableau de bord ne prend pas en charge les Pages Functions. L'adresse gratuite `*.pages.dev` fournit HTTPS.
 
 Autre possibilité, avec Wrangler connecté au compte :
 
@@ -59,9 +59,21 @@ npx wrangler login
 npm run deploy
 ```
 
-Le fichier `public/_headers` configure la politique de sécurité, l'absence de cache sur le service worker et le cache long des fichiers dont le nom est versionné. Les ressources externes et les iframes sont interdites par la politique CSP. Aucun outil d'analyse de fréquentation n'est intégré.
+Le fichier `public/_headers` configure la politique de sécurité, l'absence de cache sur le service worker et le cache long des fichiers dont le nom est versionné. La CSP autorise uniquement les ressources locales et le script/collecteur Cloudflare Web Analytics. Les iframes restent interdites.
 
-Pour chaque mise à jour : reconstruire, charger le nouveau `dist` dans le **même projet Pages**, et vérifier le site. Le cache de la PWA change selon le contenu de la compilation. Fermer les anciens onglets de QR Studio puis rouvrir l'application pour activer la nouvelle version ; cette attente préserve la cohérence des ressources utilisées hors connexion.
+Pour chaque mise à jour : reconstruire, lancer `npm run deploy` dans le **même projet Pages**, et vérifier le site. Le cache de la PWA change selon le contenu de la compilation. Fermer les anciens onglets de QR Studio puis rouvrir l'application pour activer la nouvelle version ; cette attente préserve la cohérence des ressources utilisées hors connexion.
+
+## Statistiques privées
+
+- Fréquentation : https://dash.cloudflare.com/8c97000d3a8b667f9abd2f40c50ffa41/web-analytics/overview?siteTag~in=1b776b5fcff2453ea2ce4a277af2bde7
+- Compteurs : https://dash.cloudflare.com/8c97000d3a8b667f9abd2f40c50ffa41/workers/d1/databases/f99cfb23-7cda-4a6e-b927-e39767ecf84b/studio — ouvrir la table `statistiques`. Seul le compte Cloudflare authentifié peut lire la base. Le guide simple est dans [STATISTIQUES.md](STATISTIQUES.md).
+- Une ligne `TOTAL` et une ligne par jour UTC : `qr_generes`, `telechargements_png`, `telechargements_svg`, `telechargements_total`.
+- Une création = un nouveau lien validé et stable pendant 1,2 seconde, ou exporté avant ce délai. Les changements de couleur/style et la réouverture depuis l'historique ne créent pas de nouveau comptage. Un retour à un autre lien peut compter une nouvelle création. Les téléchargements répétés sont comptés séparément.
+- Le client envoie seulement `{ "event": "qr_generated" }`, `download_png` ou `download_svg`, sans cookie, référent, identifiant, URL, image ou contenu du QR. Le serveur rejette les propriétés supplémentaires et ne conserve que la date et les totaux.
+- Les compteurs respectent DNT et Global Privacy Control, ne s'exécutent pas hors connexion et ne rattrapent pas ces actions ensuite. Aucun identifiant n'est stocké pour les statistiques. Leur blocage n'affecte pas le générateur.
+- Ces mesures sont indicatives : bloqueurs, absence de réseau, anciennes versions en cache et quotas peuvent réduire les totaux ; les soumissions automatisées peuvent les gonfler. Elles ne comptent pas les scans ultérieurs des QR statiques.
+- Création du schéma : `npx wrangler d1 execute qrtof-usage --remote --file analytics/schema.sql` (initialisation non destructive).
+- Vérifications du collecteur : `npm run test:usage`. Les tests navigateur interceptent les événements pour ne pas fausser les statistiques publiques.
 
 Documentation de gratuité : https://developers.cloudflare.com/pages/functions/pricing/ (les fichiers statiques bénéficient de requêtes gratuites et illimitées). Les limites d'infrastructure de l'hébergeur restent applicables ; la génération de QR ne contacte pas l'hébergeur.
 
